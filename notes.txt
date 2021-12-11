@@ -1,0 +1,135 @@
+@ QUESTIONS
+-----------------
+- Difference between array and slice ?
+- arrays have definite size, slices can have dynamic size
+
+- use of range ?
+- range keyword used to iterate over slice, map
+
+- why inheritance is not supported by pointer receivers ?
+
+- is Go an Object Oriented Programming language ?
+    - in technical sense, it is not an OOP language, but most of the OOP features are
+        implemented in Go, so OOP like language
+
+- three data structures we talked about?
+    - array, slice, map
+
+@ HOMEWORK
+------------------
+- We want to build two data structures; queue and stack with push-pop functions.
+    - methods : push(), pop()
+    - data structures : slice
+
+    - implement stack.go and queue.go using slices 
+    - now write a client for stack.go and queue.go
+        - Producer: 5 go routines tp push in stack.go / queue.go
+        - Consumer: 5 go routines to pull from stack.go / queue.go
+
+@ NOTES
+------------------
+- Arrays are contiguous in nature but after the defined size gets exhausted then last element 
+    maintains a pointer to the new location where additional elements are going to be stored
+- Slices are made at runtime with a pointer to the memory location
+- Slices are made using ':=' and 'make' keyword
+- ':=' is initialization + declaration, '=' is declaration
+- Array has 'length' and Slice has 'capacity'
+
+- JSON payload are string so big in size but 'proto' uses byte array as payload which are
+    smaller and hence faster than JSON. So, more in use than JSON.
+
+- Data Types
+    - basic : int, float, string, boolean
+    - composite: array, slice, map, struct
+
+- Exception Handling
+    - Checked Exceptions
+    - Unchecked Exceptions
+    - Defer : used to close resouces, exected at the end of a prog
+    - panic is used for runtime error
+    - 'panic' will exit immediately when triggered, then 'defer' will direct the control to 'recover'
+    - 'defer' handles recovery even if there is no panic mentioned explicitely
+    - defer is used to close out the live resources
+    - defer functions are prioritized in LIFO order
+    - defers are used for scenarios like for closing db connections etc
+    - panic-defer-recover works like try-catch
+
+- Functions
+    - function may/may not have a name
+    - function can have multiple return values
+    - private: Starting with lowercase letter
+    - public: Starting with uppercase letter
+    - function must have a return statement, if it doesn't then it infers an integer return value
+
+- Pass by reference
+    - using pointers, pointers to pointers
+
+- Variadic functions
+    - passing integers in this function is always received as a slice in the function
+    - slices are passed as reference, so passing a slice itself in variadic function, changes made in
+        the function will impact the main slice in main function as well
+    - 'append' is a variatic function itself. Using append on a slice creates a new slice with new reference
+
+- Closure
+    - function returning a function is Closure
+
+-Structure Tags
+    - Tags are used for validation of fields in a struct
+
+- Methods
+    - pointer receivers changes are global, impact the actual value of fields
+    - changes made in value receivers are local, won't impact the actual values
+
+- Composition vs Inheritance
+    - composition: has-a relationship
+    - inheritance : is-a relationship
+
+- Inheritance
+    - inheritance is implemented using interface
+
+- Polymophism
+    - Go supports polymorphism(i.e. function overriding)
+
+- Encapsulation
+    - provided using exported or unexported identifiers. achieved by exported elements(variables, functions, methods,
+        fields, structures) from the packages, it helps to control the visibility of the elements(variables, 
+        functions, methods, fields, structures)
+
+- Abstraction
+    - provided using interface
+
+- Interface
+    - interface in Go is a collection of functions or other interfaces, not variables.
+    - composite interface is an interface of interfaces
+    - Type-Switch/blank interface is used to build functions that work on multiple types of data
+    - every type implements an interface as a default type, so a function with blank interface parameter can
+        accept any type of arguments
+
+- Parallelism vs Concurrency
+    - single process(p) run by 6 different processors at the same time is called Parallelism
+    - 6 processes(p1,p2,p3,p4,p5,p6) run by 6 different processors at the same time is called Concurrency
+    - Go routine and Go channels are used to implement concurrency
+    - main function is also a Go routine
+    - normal functon call uses main stack, and Go routines uses their own stack
+
+- A single processor can have multiple processes
+- A single process can have multiple threads
+- thread is a sequence of instructions with a program counter
+- OS allocates 16MB space working memory/space
+- OS takes some time to prepare for scheduling the threads
+- Go takes liberty of scheduling the threads by itself without OS intervention. 
+- Go have their own schedulers, interact with RAM directly. So saves a lot of time
+
+- There is only one main Go routine
+- CPU is capable of running multiple processes, but how fast will it run will depend on the cores
+- Go provides more than any other language:
+    - low latency: fast response
+    - scalability: reponse time when you have million requests
+- speed against ease-of-use is the trade off in Go
+
+- Go routines run in ambiguous order. No fixed order
+- Channels are way to communicate between Go Routines
+- Synchronization
+    - Mutex, Lock variables, channels are options.
+    - channels are preferrable to others
+    - 'Channel' is a variable/type/memory location in your heap
