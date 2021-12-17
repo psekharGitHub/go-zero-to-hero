@@ -15,6 +15,19 @@
 - three data structures we talked about?
     - array, slice, map
 
+- prefered mechanism to handle concurrency ?
+    - commmunication is preferable. Mutex/Lock is also an option
+
+- Why are threads in Go lightweight ?
+    - they are created at runtime, in heap, in main memory, which makes it very fast
+
+- When two threads are running, do we know the order of execution ?
+    - No
+
+- When to use select statement ?
+    - Whenever we have multiple resources to get the data from
+        like google searches
+
 @ HOMEWORK
 ------------------
 - We want to build two data structures; queue and stack with push-pop functions.
@@ -133,3 +146,56 @@
     - Mutex, Lock variables, channels are options.
     - channels are preferrable to others
     - 'Channel' is a variable/type/memory location in your heap
+
+- WaitGroup
+    - waitgroup lets the main goroutine wait for other goroutines to complete
+    - better version of Scanln, but still cannot decide the order of execution of process
+
+- Channel Direction
+    - one channel sends a message, other channel receives the message
+    - 'chan<-' means channel that receives message
+    - '<-chan' means channel that sends the message
+    - bi-directional and uni-directional
+    - channels can carry other channels
+    - has capacity and direction
+
+- Different Locking Mechanism
+    - waitgroup, mutex, atomic, channel
+
+- Ticker
+    - provides output on timely basis / set intervals
+    - make a scheduler for a program
+    - for scheduling jobs synchronously.
+
+- Throttling / Rate Limiting
+    - We can check the threshold using stateful-routines code
+    - When a server reaches 80-90% of its threshold, then rate limiter throttles/delays the 
+        incoming threads/processes to prevent crash
+    - incoming requests can come in as they please, but load balancer, allows each request after
+        a set interval of time(using Ticker).
+    - Token Bucket algorithm 
+
+- Serialization
+    - reading files with data as byte stream
+
+- HTTP server
+    - server that takes an http request and returns a response in http format
+    - net/http provides http webserver
+    - webserver is a multi-threaded system
+    - 
+
+- Micro service
+    - independent system that can exist on its own
+    - any service that takes care of one functionality/responsibility
+    - independent
+    - testable independently
+    - deploy indepedently
+    - able to communicate with other micro services by making API calls
+    - eg: Amazon : User Service and Product Service
+        - User Service can be broken in to 4APIs: read, write, delete, update
+        - User service has multiple APIs
+        - Can be tested and deployed and evolve independently
+        - User service should not have any dependency on Product Service or any other services as such
+            but communicate using API calls
+
+- API vs Microservices

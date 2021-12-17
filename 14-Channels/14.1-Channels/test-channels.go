@@ -12,6 +12,7 @@ func main() {
 	go func() { messages <- "ping" }()
 
 	//he <-channel syntax receives a value from the channel. Here we’ll receive the "ping" message we sent above and print it out.
+	//it is a blocking code, till the channel receives a messsage, it will wait here
 	msg := <-messages
 	fmt.Println(msg)
 }
