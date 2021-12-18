@@ -1,5 +1,9 @@
 @ QUESTIONS
 -----------------
+day 1 & 2:
+- Why use Go ?
+    - Concurrency and Microservices
+
 - Difference between array and slice ?
 - arrays have definite size, slices can have dynamic size
 
@@ -18,6 +22,7 @@
 - prefered mechanism to handle concurrency ?
     - commmunication is preferable. Mutex/Lock is also an option
 
+day3 :
 - Why are threads in Go lightweight ?
     - they are created at runtime, in heap, in main memory, which makes it very fast
 
@@ -25,8 +30,42 @@
     - No
 
 - When to use select statement ?
-    - Whenever we have multiple resources to get the data from
+    - Whenever we have multiple resources/channels to get the data from
         like google searches
+
+- Frameworks to look up: go kit
+
+day 4:
+- REST APIs stand over HTTP protocols
+
+- Are Http protocols stateless ? True
+    stateless: we maintain data in our db
+
+- CAP theorem: Consistency Avaiability Partition
+    a system can be partitioned to be either consistent or available. You cannot have both.
+
+- Services should be idempotent.
+    - when a service is hit multiple times, it should return same response everytime.
+
+- How to make service consistent ?
+    - Synchronous consistency: Whenever you make write of data on a user service, you make a replica 
+      of the data on 2 or more server. So that when main server go down, other servers can step in and wont 
+      affect performance. Replicate straight away
+
+    - Asynchronous consistency: Replicate data eventually.
+
+- Synchronous consistency: used when read latency is low and write latency is high
+    like pgdb, mysql data. Usecase: payments
+- Asynchronous consistency: used when read latency is high and write latency is low
+    like cassandra, mongoDb, Usecase: tweets, posts etc
+
+- NoSql db offer Tunable Consistency
+
+- State two formats for file transfer ?
+    - JSON and proto
+
+- servers seen so far ?
+    - http, gorilla mux, gin
 
 @ HOMEWORK
 ------------------
@@ -39,10 +78,25 @@
         - Producer: 5 go routines tp push in stack.go / queue.go
         - Consumer: 5 go routines to pull from stack.go / queue.go
 
+@ COMMANDS
+------------------
+command for: get proto-gen-go
+    - go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+
+check for unmatched braces
+    - go lint <filename>
+    - go fmt <filename>
+
+check all docker processes running on a machine
+    - docker ps
+will connect inside a docker container
+    - docker exec -it <image_id>
+
 @ NOTES
 ------------------
 - Arrays are contiguous in nature but after the defined size gets exhausted then last element 
     maintains a pointer to the new location where additional elements are going to be stored
+
 - Slices are made at runtime with a pointer to the memory location
 - Slices are made using ':=' and 'make' keyword
 - ':=' is initialization + declaration, '=' is declaration
@@ -65,6 +119,7 @@
     - defer is used to close out the live resources
     - defer functions are prioritized in LIFO order
     - defers are used for scenarios like for closing db connections etc
+    - panic used for runtime error
     - panic-defer-recover works like try-catch
 
 - Functions
@@ -157,7 +212,7 @@
     - '<-chan' means channel that sends the message
     - bi-directional and uni-directional
     - channels can carry other channels
-    - has capacity and direction
+    - has capacity and direction and type
 
 - Different Locking Mechanism
     - waitgroup, mutex, atomic, channel
@@ -184,7 +239,7 @@
     - webserver is a multi-threaded system
     - 
 
-- Micro service
+- Microservice
     - independent system that can exist on its own
     - any service that takes care of one functionality/responsibility
     - independent
@@ -199,3 +254,80 @@
             but communicate using API calls
 
 - API vs Microservices
+
+- REST APIs
+    - Representational State Transfer
+    - what is state ? 
+        - User service is a micro service
+        - state is the data about the user. (state keeps on changing)
+        - data for state resides in database
+        - we should not keep array of users in the heap memory(RAM). why?
+            - data would be non persistant
+            - distribution of data will be difficult. If data is local, then communicating among servers will 
+                be impossible because, it may occur that someone may need some details regarding a user which resides in the RAM, so it is not possible to access.
+        
+        - API should be stateless. Data should be always in database, it shouldn't be with you.
+        
+        - data taken from browser as JSON object, shift it to backend convert it to target object, then someone will save the data in the database. This is 
+            Marshalling \ Serialization and DeSerialization of data.
+
+        - go structures reside in heap memory managed by go runtime environment. If you want that data to be send to the browser, it means data should flow through wire in form of bits. But that is not controlled by go runtime, it is controlled by OS. So, sending as JSON structure in form of bits/bytes, makes it easier to transfer the data.
+            This is Seriaization. Backend will receive the JSON structure and convert it back into Go strucutre. This is DeSerialization. (JSON works with every language, so works equally good with frontend and backend)
+
+        - protoBuf, we do not write to JSON. Take Go Bytecode corresponding to the Go struture. Proto reads the Go strucutre and using proto compiler, convert it into .proto format(which is also a bytecode format) which is platform independent.
+            on backend, there is proto compiler, that will convert the .proto bytecode to python structure, or any other backend language.
+            40% reduction in latency in proto than JSON, due to reduction in payload size.
+        
+        - Dividing a file into multiple small chunks is an excellent use-case of uploading videos like Netflix
+            Netfix performs transcoding for different devices
+        
+        
+        - Spriting algorithm: send multiple resources/files together by combining them and set boundaries as delimiter, and send to a server
+            - usecase: receive multiple files from client end, and forward all the documnets to the Bank Server in optimized way.
+            - used to reduce the no. of hop jumps, but combining them maight increase the payload
+        
+        - in basic.proto
+            message Person {
+                    string name = 1;
+                    int32 age = 2;
+            }
+            name = 1 and age = 2; means 1st data is name and 2nd is age always.
+
+        - Two ways of building services in industry
+            - REST API
+            - GRPC: in bytestream and predecided connections
+                (implemented in 18-Template-and-Data-formats\18.4-Proto)
+            
+        - Advantages of protobuf/GRPC
+            - order of data can be predefined
+            - more secure, as both parties should have proto install
+            - type of data specified. So Type safe
+
+        - Testing
+            - test driven development: first change test cases, then change code
+
+        - Docker
+            - helps in testing services for different machines/OS, or dev/stage/prod servers
+            - docker images work irrespective of the underlying OS of current machine
+            - alpine is a light weight process for Linux
+            - docker as a framwork creates an image file and runs our service in it.
+            - provides a virtual environment/space in our pc to load a virtual image of another/target OS and installs golang in it
+            - allows an OS to run over another OS
+            - 7000 port of local machine is mapped to 7000 port of docker machine
+            - then requests made to 7000 port of local machine seems to be served as being served by 7000 port of docker machine
+            - atomic per service. 1 service per Docker
+            - if you have a service dockerised on your machine, then you can run that docker file in any other sever, and get same service without any discrepancies
+            - helps in migration of services from one server to another
+
+        - Docker Compose 
+            - used for running multiple services having shared memory and resoures and they can communicate between eachother
+        
+        - Interface has only function declaration
+        
+        - Implement counter using 'atomic' package
+        
+        - Ticker vs Timer: Ticker is scheduler and Timer is coutdown timer
+        
+        - Two best practices for building services:
+            - Stateless
+            - idempotent
